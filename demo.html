@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>AutoResize Demo</title>
+	<style type="text/css">
+	    .color-black { color: black }
+	    .color-white { color: white }
+	    .bg-black { background-color: black }
+	    .bg-white { background-color: white }
+	</style>
+</head>
+<body>
+	<pre id="message" class="color-black bg-white border-black">Modify A Control</pre>
+	<fieldset>
+	   <legend>Text Inputs</legend>
+	   <input class="target" type="text" placeholder="Type here..." />
+	</fieldset>
+	<script src="http://code.jquery.com/jquery-latest.js"></script>
+	<script src="jquery.changed.js"></script>
+	<script>
+	
+	    var message;
+	
+		function onDomReady() { 
+		    var targets = jQuery('.target');
+		    message = jQuery('.message');
+			targets.bind('changed', 'color', toggleClass);
+			targets.changed('bg', toggleClass);
+			$(doc.body).delegate('.target', 'changed', 'border', changeText)
+		}
+		
+		function toggleClass(event) {
+			message.toggleClass(event.data+'-white').toggleClass(event.data+'-black');
+		}
+		
+		function changeText(event, change) {
+		    message.text(JSON.encode(change));
+		}
+		
+		jQuery(document).ready(onDomReady);
+	
+	</script>
+</body>
+</html>
