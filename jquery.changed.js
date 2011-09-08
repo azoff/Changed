@@ -51,9 +51,6 @@
                     data.events  = 'change';
                     data.handler = selectchange;
                     break;
-                default:
-                    //TODO: domchange
-                    break;
             }
             target.data(datakey, data);
         }
