@@ -4,17 +4,39 @@
 	<meta charset="utf-8">
 	<title>AutoResize Demo</title>
 	<style type="text/css">
-	    .color-black { color: black }
-	    .color-white { color: white }
-	    .bg-black { background-color: black }
-	    .bg-white { background-color: white }
+	    #message { padding: 10px; }
+	    .color-default { color: black }
+	    .color-alt { color: white }
+	    .bg-default { background-color: yellow }
+	    .bg-alt { background-color: blue }
+	    .bg-default { border: solid 3px red; }
+	    .bg-alt { border: solid 3px green; }
 	</style>
 </head>
 <body>
-	<pre id="message" class="color-black bg-white border-black">Modify A Control</pre>
+	<pre id="message" class="color-default bg-default border-default">Modify A Control</pre>
 	<fieldset>
 	   <legend>Text Inputs</legend>
-	   <input class="target" type="text" placeholder="Type here..." />
+	   <input id="input" class="target" type="text" placeholder="Inputs..." />
+	   <textarea id="textarea" class="target" placeholder="Textareas..."></textarea>
+	</fieldset>
+	<fieldset>
+	   <legend>Checkable Inputs</legend>
+	   <label for="checkboxA">Checkbox Inputs:</label>
+	   <input id="checkboxA" class="target" name="checkbox" type="checkbox" value="checkboxA" />
+	   <input id="checkboxB" class="target" name="checkbox" type="checkbox" value="checkboxB" />
+	   <label for="radioA">Radio Inputs:</label>
+   	   <input id="radioA" class="target" name="radio" type="radio" value="radio A" />
+   	   <input id="radioB" class="target" name="radio" type="radio" value="radio B" />
+	</fieldset>
+	<fieldset>
+	   <legend>Selectable Inputs</legend>
+	   <select id="select" class="target">
+	       <option value="">Select Boxes</option>
+	       <option value="Option A">Option A</option>
+	       <option value="Option B">Option B</option>
+	       <option value="Option C">Option C</option>
+	   </select>
 	</fieldset>
 	<script src="http://code.jquery.com/jquery-latest.js"></script>
 	<script src="jquery.changed.js"></script>
@@ -24,18 +46,19 @@
 	
 		function onDomReady() { 
 		    var targets = jQuery('.target');
-		    message = jQuery('.message');
+		    message = jQuery('#message');
+			targets.bind('changed', changeText);
 			targets.bind('changed', 'color', toggleClass);
 			targets.changed('bg', toggleClass);
-			$(doc.body).delegate('.target', 'changed', 'border', changeText)
+			$(document.body).delegate('.target', 'changed', 'border', toggleClass)
 		}
 		
 		function toggleClass(event) {
-			message.toggleClass(event.data+'-white').toggleClass(event.data+'-black');
+			message.toggleClass(event.data+'-default').toggleClass(event.data+'-alt');
 		}
 		
-		function changeText(event, change) {
-		    message.text(JSON.encode(change));
+		function changeText(event, value) {
+		    message.text(this.id + ' => ' + JSON.stringify(value));
 		}
 		
 		jQuery(document).ready(onDomReady);
