@@ -1,4 +1,5 @@
-/*
+/** @preserve
+ *
  * Changed v1.0.0
  *  DOM Input Change, the way it is supposed to work.
  *  http://azoffdesign.com/autoresize
