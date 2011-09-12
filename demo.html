@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>AutoResize Demo</title>
+	<title>Checked Demo</title>
 	<style type="text/css">
-	    #message { padding: 10px; }
+	    #messages { height: 100px; overflow: auto; display: block; width: 99%; }
 	    .color-default { color: black }
 	    .color-alt { color: white }
 	    .bg-default { background-color: yellow }
@@ -14,7 +14,7 @@
 	</style>
 </head>
 <body>
-	<pre id="message" class="color-default bg-default border-default">Modify A Control</pre>
+	<textarea id="messages" class="color-default bg-default border-default" placeholder="Modify A Control" disabled></textarea>
 	<fieldset>
 	   <legend>Text Inputs</legend>
 	   <input id="input" class="target" type="text" placeholder="Inputs..." />
@@ -46,7 +46,7 @@
 	
 		function onDomReady() { 
 		    var targets = jQuery('.target');
-		    message = jQuery('#message');
+		    message = jQuery('#messages');
 			targets.bind('changed', changeText);
 			targets.bind('changed', 'color', toggleClass);
 			targets.changed('bg', toggleClass);
@@ -58,7 +58,7 @@
 		}
 		
 		function changeText(event, value) {
-		    message.text(this.id + ' => ' + JSON.stringify(value));
+		    message.text(this.id + ' => ' + JSON.stringify(value) + '\n' + message.text());
 		}
 		
 		jQuery(document).ready(onDomReady);
