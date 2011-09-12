@@ -1,7 +1,7 @@
 /** @preserve
  *
  * Changed v1.0.0
- *  DOM Input Change, the way it is supposed to work.
+ *  DOM Change events, the way they should've worked.
  *  http://azoffdesign.com/autoresize
  *
  * Intended for use with the latest jQuery
