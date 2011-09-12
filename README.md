@@ -65,8 +65,7 @@ $('input').changed("I'm data!", function(event, value){
 
 Submitting Bug Reports
 ----------------------
-File all bug reports on the official [Issue Tracker](https://github.com/azoff/AutoResize/issues), 
-and all send complaints to `/dev/null`
+File all bug reports on the official [Issue Tracker](/issues), and all send complaints to `/dev/null`
 
 Change Log
 ----------
