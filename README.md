@@ -2,6 +2,8 @@ Changed v1.0.0
 =================
 Tuesday, August 23rd 2011
 
+Homepage: <http://azoffdesign.com/changed>
+
 Changed is a jQuery Plugin that extends [jQuery's special events](http://benalman.com/news/2010/03/jquery-special-events/) to include support for a simulated "DOM Changed" event. The Changed event is a custom event that attempts to address two annoying inadequacies with the existing [DOM Change event](http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-eventgroupings-htmlevents):
 
 1) DOM change, as [defined by the specification](http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-eventgroupings-htmlevents), says that change should only be triggered "when a control loses the input focus and its value has been modified since gaining focus". However, in the context of forms, this triggering criteria does not efficiently indicate the exact point at which the submitted form state has changed. 
@@ -17,8 +19,6 @@ little hassle. Simply bind an event listener to the "changed" using jQuery - the
 an event object, and is executed in the context of of the changed element. Referring back to our example in the first bullet, the event handler for DOM Change would let you get current text input value, via `event.target.value` or `this.value`. Not only are multiple property references slow, but the value itself is almost useless unless it is actually going to be submitted with the form. Hence, the developer is once again forced to write boilerplate code, ensuring that the input is actually qualified for submission before including it in the aggregate form state. For instance, this boilerplate may look like a validation around the checked property of a checkbox input.
 
 Once again, Changed attempts to address this issue by passing in a non-standard second argument into the event handler. This value is a string containing the current form state for the Changed element. If the element is unqualified - not applicable for form submission - this value will be undefined. With this capability, you can now manage form state when the change happens without extra handlers or parsing with jQuery.
-
-Homepage: <http://azoffdesign.com/changed>
  
 License
 -------
