@@ -153,11 +153,12 @@
      * Expose the jQuery.fn.changed shorthand. i.e. $('selector').changed(callback);
      */
     fn[eventName] = function(data, handler) {
-         if ($.isFunction(handler)) {
-             return this.on(eventName, null, data, handler);
-         } else if ($.isFunction(data)) {
-             return this.on(eventName, data);
-         }
+        if ($.isFunction(handler)) {
+            this.on(eventName, null, data, handler);
+        } else if ($.isFunction(data)) {
+            this.on(eventName, data);
+        }
+        return this;
      };
 
     /**
