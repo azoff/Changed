@@ -154,11 +154,14 @@
      */
     fn[eventName] = function(data, handler) {
         if ($.isFunction(handler)) {
-            this.on(eventName, null, data, handler);
+            return this.on(eventName, null, data, handler);
         } else if ($.isFunction(data)) {
-            this.on(eventName, data);
+            return this.on(eventName, data);
+        } else if (data) {
+	         return this.trigger('changed', data);
+        } else {
+	         return this.trigger('changed');
         }
-        return this;
      };
 
     /**
