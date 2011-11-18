@@ -129,7 +129,7 @@
         } else if (target.is('[type=radio]')) {
             if (target.is(':checked')) { addcheckdata(target); }
             data.handler = radiochange;
-        } else if (target.is('[type=text],[type=password],textarea')) {
+        } else {
             data.value = getvalue(target);
             data.events  = 'input paste keyup';
             data.handler = textchange;
@@ -153,15 +153,15 @@
      * Expose the jQuery.fn.changed shorthand. i.e. $('selector').changed(callback);
      */
     fn[eventName] = function(data, handler) {
-        if ($.isFunction(handler)) {
-            return this.on(eventName, null, data, handler);
-        } else if ($.isFunction(data)) {
-            return this.on(eventName, data);
-        } else if (data) {
+         if ($.isFunction(handler)) {
+             return this.on(eventName, null, data, handler);
+         } else if ($.isFunction(data)) {
+             return this.on(eventName, data);
+         } else if (data) {
 	         return this.trigger('changed', data);
-        } else {
+         } else {
 	         return this.trigger('changed');
-        }
+         }
      };
 
     /**
