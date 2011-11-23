@@ -17,9 +17,15 @@
  * Date: Sunday, September 11th, 2011
  */
 
-(function($, fn, events){
+(function($, fn, events, poll, stop){
 
     "use strict"; var
+
+	/**
+	 * The time to wait between polling - for inputs that do not support any change
+	 * events
+	 */
+	interval = 100,
 
     /**
      * We'll take the top-level 'changed' event name, mainly because W3 didn't get
@@ -124,15 +130,19 @@
      */
     setupdata = function(target) { var
         data = { events: 'change' };
-        if(target.is('[type=checkbox],[type=hidden],select')) {
+        if(target.is('[type=checkbox],select')) {
             data.handler = correctchange;
         } else if (target.is('[type=radio]')) {
             if (target.is(':checked')) { addcheckdata(target); }
             data.handler = radiochange;
+        } else if (target.is('[type=hidden]')) {
+	        data.events  = 'poll';
+	        data.value = getvalue(target);
+	        data.handler = $.proxy(textchange, target);
         } else {
-            data.value = getvalue(target);
-            data.events  = 'input paste keyup';
-            data.handler = textchange;
+	        data.events  = 'input paste keyup';
+	        data.value = getvalue(target);
+	        data.handler = textchange;
         }
         target.data(datakey, data);
         return data;
@@ -176,7 +186,11 @@
          */
         setup: function(){
             var $this = $(this), data = setupdata($this);
-            $this.on(data.events, data.handler);
+            if (data.events === 'poll') {
+				data.interval = poll(data.handler, interval);
+            } else {
+	            $this.on(data.events, data.handler);
+            }
         },
 
         /**
@@ -185,9 +199,13 @@
          */
         teardown: function(){
             var $this = $(this), data = teardowndata($this);
-            $this.off(data.events, data.handler);
+	        if (data.events === 'poll') {
+				stop(data.interval);
+            } else {
+	            $this.off(data.events, data.handler);
+            }
         }
 
     };
 
-})(jQuery, jQuery.fn, jQuery.event.special);
+})(jQuery, jQuery.fn, jQuery.event.special, window.setInterval, window.clearInterval);
