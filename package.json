@@ -23,7 +23,7 @@
     "keywords": [
         "DOMChange", "change", "event", "simple"
     ],
-    "homepage": "http://azoffdesign.com/overscroll",
+    "homepage": "http://azoffdesign.com/changed",
     "contributors": [
         {
             "name": "Jonathan Azoff",
@@ -31,7 +31,7 @@
         }
     ],
     "files": [
-        "jquery.overscroll.js",
-        "jquery.overscroll.min.js"
+        "jquery.changed.js",
+        "jquery.changed.min.js"
     ]
 }
