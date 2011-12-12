@@ -17,50 +17,56 @@
  * Date: Sunday, September 11th, 2011
  */
 
-(function($, fn, events){ 
-    
-    "use strict"; var 
-    
+(function($, fn, events, poll, stop){
+
+    "use strict"; var
+
+	/**
+	 * The time to wait between polling - for inputs that do not support any change
+	 * events
+	 */
+	interval = 100,
+
     /**
      * We'll take the top-level 'changed' event name, mainly because W3 didn't get
      * 'change' right, so no sense in trusting them now :)
      */
     eventName = 'changed',
-    
-    
+
+
     /**
-     * The key used for storing data on DOM elements, data that is used for 
+     * The key used for storing data on DOM elements, data that is used for
      * the changed event
      */
     datakey = eventName + 'Data',
-    
+
     /**
      * A list of radio buttons bound by the changed event, used to make sure that
-     * we can capture the "unchecked" portion of a radio's change event 
+     * we can capture the "unchecked" portion of a radio's change event
      */
     checked = {},
-    
+
     /**
-     * Gets the data object for this element, necessary for the changed event to 
-     * process the element state. 
+     * Gets the data object for this element, necessary for the changed event to
+     * process the element state.
      */
-    getdata = function(element) { 
-        var target = $(element), 
+    getdata = function(element) {
+        var target = $(element),
         data = target.data(datakey) || {};
-        target.data(datakey, data); 
+        target.data(datakey, data);
         return data;
     },
-    
+
     /**
      * Get's the value of an element, only if it would appear in a form submission
      */
     getvalue = function(element) {
         var valid = !element.is('[type=radio],[type=checkbox]') || element.is(':checked');
-        return valid ? element.val() : undefined; 
+        return valid ? element.val() : undefined;
     },
-    
+
     /**
-     * The handler used for elements that actually have a useful "change" event. 
+     * The handler used for elements that actually have a useful "change" event.
      * Ironic name, I know.
      */
     correctchange = function() {
@@ -68,7 +74,7 @@
         value = getvalue($this);
         $this.trigger(eventName, [value]);
     },
-    
+
     /**
      * Called when a text-based input text actually changes, not after blur!
      */
@@ -81,12 +87,12 @@
             correctchange.call($this);
         }
     },
-    
+
     /**
      * Properly handles the transition between radio checks, by ensuring the
      * last radio checked in the name group triggers an unchecked changed event
      */
-    addcheckdata = function(target) { var 
+    addcheckdata = function(target) { var
         container = target.closest('form,body'),
         data = getdata(container), existing,
         name = target.attr('name');
@@ -96,11 +102,11 @@
         }
         data[name] = target;
     },
-    
+
     /**
      * Removes checked data from the container element
      */
-    removecheckdata = function(target) { var 
+    removecheckdata = function(target) { var
         container = target.closest('form,body'),
         data = getdata(container),
         name = target.attr('name');
@@ -108,31 +114,35 @@
             delete checked[name];
         }
     },
-    
+
     /**
      * Called after a radio is checked or unchecked, not just on check!
      */
-    radiochange = function() { var 
+    radiochange = function() { var
         $this = $(this),
         data = getdata(this);
         addcheckdata($this);
         correctchange.call(this);
     },
-    
+
     /**
      * Initializes the internal data object for the changeable element
      */
-    setupdata = function(target) { var 
-        handler, data = { events: 'change' };
-        if(target.is('[type=checkbox],[type=hidden],select')) {
+    setupdata = function(target) { var
+        data = { events: 'change' };
+        if(target.is('[type=checkbox],select')) {
             data.handler = correctchange;
         } else if (target.is('[type=radio]')) {
             if (target.is(':checked')) { addcheckdata(target); }
             data.handler = radiochange;
-        } else if (target.is('[type=text],[type=password],textarea')) {
-            data.value = getvalue(target);                
-            data.events  = 'input paste keyup';
-            data.handler = textchange;
+        } else if (target.is('[type=hidden]')) {
+	        data.events  = 'poll';
+	        data.value = getvalue(target);
+	        data.handler = $.proxy(textchange, target);
+        } else {
+	        data.events  = 'input paste keyup';
+	        data.value = getvalue(target);
+	        data.handler = textchange;
         }
         target.data(datakey, data);
         return data;
@@ -141,38 +151,46 @@
     /**
      * Clears the internal data object for the changeable element
      */
-    teardowndata = function(target) { 
+    teardowndata = function(target) {
         var data = getdata(target);
         if (target.is('[type=radio]:checked')) {
             removecheckdata(target);
         } target.removeData(datakey);
         return data;
     };
-    
+
     /**
      * Expose the jQuery.fn.changed shorthand. i.e. $('selector').changed(callback);
      */
     fn[eventName] = function(data, handler) {
          if ($.isFunction(handler)) {
-             this.bind(eventName, data, handler);
+             return this.on(eventName, null, data, handler);
          } else if ($.isFunction(data)) {
-             this.bind(eventName, data);
+             return this.on(eventName, data);
+         } else if (data) {
+	         return this.trigger('changed', data);
+         } else {
+	         return this.trigger('changed');
          }
      };
-    
+
     /**
      * Create rules for jQuery's internal "special event" system.
      * @link http://benalman.com/news/2010/03/jquery-special-events/
      */
     events[eventName] = {
-        
+
         /**
          * Called when a "changed" listener is first bound to an element. It
          * loads the data for that element, and binds the correct listener.
          */
-        setup: function(){ 
+        setup: function(){
             var $this = $(this), data = setupdata($this);
-            $this.bind(data.events, data.handler);
+            if (data.events === 'poll') {
+				data.interval = poll(data.handler, interval);
+            } else {
+	            $this.on(data.events, data.handler);
+            }
         },
 
         /**
@@ -181,9 +199,13 @@
          */
         teardown: function(){
             var $this = $(this), data = teardowndata($this);
-            $this.unbind(data.events, data.handler);
+	        if (data.events === 'poll') {
+				stop(data.interval);
+            } else {
+	            $this.off(data.events, data.handler);
+            }
         }
-        
+
     };
-    
-})(jQuery, jQuery.fn, jQuery.event.special);
+
+})(jQuery, jQuery.fn, jQuery.event.special, window.setInterval, window.clearInterval);
