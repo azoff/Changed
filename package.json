@@ -1,0 +1,37 @@
+{
+    "name": "changed",
+    "version": "1.0.0",
+    "title": "jQuery.fn.changed()",
+    "author": {
+        "name": "Jonathan Azoff",
+        "url": "http://azoffdesign.com/about"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "https://raw.github.com/jquery/jquery/master/MIT-LICENSE.txt"
+        },
+        {
+            "type": "GPL",
+            "url": "https://raw.github.com/jquery/jquery/master/GPL-LICENSE.txt"
+        }
+    ],
+    "dependencies": {
+        "jquery": ">=1.7"
+    },
+    "description": "Changed is a jQuery Plugin that extends jQuery's special events to include support for a simulated 'DOM Changed' event",
+    "keywords": [
+        "DOMChange", "change", "event", "simple"
+    ],
+    "homepage": "http://azoffdesign.com/overscroll",
+    "contributors": [
+        {
+            "name": "Jonathan Azoff",
+            "url": "https://github.com/azoff"
+        }
+    ],
+    "files": [
+        "jquery.overscroll.js",
+        "jquery.overscroll.min.js"
+    ]
+}
